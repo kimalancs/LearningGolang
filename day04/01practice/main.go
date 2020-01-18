@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"strings"
 )
 
 /*
@@ -15,6 +14,7 @@ d: 名字中每包含1个'u'或'U'分4枚金币
 写一个程序，计算每个用户分到多少金币，以及最后剩余多少金币？
 程序结构如下，请实现 ‘dispatchCoin’ 函数
 */
+
 var (
 	coins = 50
 	users = []string{
@@ -24,32 +24,29 @@ var (
 )
 
 func dispatchCoin(coins int, users []string) int {
-	count := 0
 	for _, user := range users {
-		user2 := strings.ToLower(user) 
-		for _, letter := range user2 {
+		for _, letter := range user {
 			switch letter {
-			case 'e':
-				count++
-			case 'i':
-				count += 2
-			case 'o':
-				count += 3
-			case 'u':
-				count += 4
+			case 'e', 'E':
+				distribution[user]++
+			case 'i', 'I':
+				distribution[user] += 2
+			case 'o', 'O':
+				distribution[user] += 3
+			case 'u', 'U':
+				distribution[user] += 4
 			}
 		}
-		distribution[user] = count
-		coins -= count
-		count = 0
+		coins -= distribution[user]
 	}
 	return coins
 }
 
 func main() {
-
 	left := dispatchCoin(coins, users)
 	// left := dispatchCoin()
 	fmt.Println("剩下：", left)
-	fmt.Println(distribution)
+	for k, v := range distribution {
+		fmt.Printf("%s:%d\n", k, v)
+	}
 }

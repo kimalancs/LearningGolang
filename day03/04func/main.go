@@ -105,7 +105,7 @@ func main() {
 		age   int
 	)
 	//Scanf为输入数据指定了具体的输入内容格式，只有按照格式输入数据才会被扫描并存入相应变量
-	fmt.Scanf("姓名：%s 年龄：%d\n", &name, &age)
+	fmt.Scanf("%s %d\n", &name, &age)
 	fmt.Println(name, age)
 
 	// 遇到换行才停止扫描，最后一个数据之后必须有换行，遇到回车就结束扫描

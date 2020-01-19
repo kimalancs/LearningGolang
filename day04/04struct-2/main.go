@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"encoding/json"
+	"fmt"
+)
 
 // 构造函数
 // 返回一个结构体变量的函数
@@ -70,6 +73,83 @@ func (i myInt) hello() {
 	fmt.Println("我是一个int")
 }
 
+// 	结构体中可以嵌套其他结构体或结构体指针
+type address struct {
+	country string
+	city    string
+}
+
+type detail struct {
+	CEO       string
+	startYear int64
+}
+
+type company struct {
+	name    string
+	address address // 正常嵌套
+	detail          // 匿名嵌套
+}
+
+// 匿名嵌套结构体
+// 语法糖，匿名嵌套时，可以直接访问嵌套的结构体的字段
+// 正常嵌套访问字段 company1.address.city
+// 匿名嵌套访问字段 company1.CEO ，可以省略匿名嵌套结构体
+// 先在自己的结构体字段中找，然后再去匿名嵌套的结构体字段中找
+
+// 匿名嵌套结构体字段冲突
+// 如果两个匿名嵌套的结构体中有同名的字段，就会存在冲突，无法直接访问，要像访问正常嵌套结构体字段一样，指定匿名嵌套的结构体
+// company1.detail.CEO
+
+// 结构体的“继承”，模拟实现其他语言中面向对象的继承
+// Go语言中没有继承的概念
+
+type animals struct {
+	name string
+}
+
+func (a *animals) move() {
+	fmt.Printf("%s can move\n", a.name)
+}
+
+type dog struct {
+	feet    int8
+	animals // 通过嵌套匿名结构体实现继承，animals的字段和方法，dog都具有了
+}
+
+func (d *dog) bark() {
+	fmt.Printf("%s can bark\n", d.name)
+}
+
+// 结构体中首字母大写的字段可公开访问，首字母小写的字段私有，仅在定义该结构体的包中可访问
+
+// 结构体与JSON
+// JSON，JavaScript Object Notion，轻量级的数据交换格式，易于阅读和编写，也易于机器解析和生成。
+// 键值对组合中的键名写在前面并用双引号包裹，使用冒号分隔，然后紧跟值，多个键值之间用英文逗号分隔，键值之间和键值对之间没有空格
+
+// 结构体变量转换成JSON格式的字符串，序列化
+// encoding/json包
+// 结构体中的字段名要首字母大写才可以，否则json包无法访问，就无法处理
+// 结构体中首字母大写的字段可以被json包访问，处理输出
+// 如果需要输出的键值对中key首字母要小写，就要用Tag结构体标签
+// Tag是结构体的元信息，可以在运行的时候通过反射机制读取出来
+// Tag在结构体字段的后方定义，由一对反引号包裹起来
+// Tag必须严格遵守键值对的规则。结构体标签的解析代码的容错能力很差
+// 一旦格式写错，编译和运行都不会提示任何错误，通过反射也无法正确取值，例如不要在key和value之间添加空格
+
+// JSON格式的字符串转换成Go语言中能够识别的结构体变量，反序列化
+
+type singer struct {
+	Name   string `json:"name"` //通过指定tag实现json序列化该字段时的key
+	Age    int8   // json序列化默认使用字段名作为key
+	Album album
+	gender string // 首字母小写的字段，私有不能被json包访问
+}
+
+type album struct {
+	AlbumName   string
+	ReleaseYear int64
+}
+
 func main() {
 	p1 := newPerson("kim", 18)
 	p2 := newPerson("taeyeon", 17)
@@ -95,4 +175,69 @@ func main() {
 	m4 := myInt(97)
 	fmt.Println(m1, m2, m3, m4)
 	m4.hello()
+
+	c1 := company{
+		name: "QAX",
+		address: address{
+			country: "China",
+			city:    "Beijing",
+		},
+		detail: detail{
+			CEO:       "Qi",
+			startYear: 2018,
+		},
+	}
+
+	fmt.Println(c1)
+	fmt.Println(c1.name, c1.address.city)
+	fmt.Println(c1.CEO, c1.detail.startYear) // 匿名嵌套的结构体字段可以直接访问
+
+	d1 := dog{
+		feet: 4,
+		animals: animals{
+			name: "zero",
+		},
+	}
+
+	d1.bark()
+	d1.move()
+
+	data, err := json.Marshal(c1)
+	if err != nil {
+		fmt.Printf("marshal failed, error:%v\n", err)
+		return
+	}
+	fmt.Printf("%s\n", data) //{"CEO":"Qi"}，只有CEO字段大写所以json能访问，才能获取，其他字段都没有办法处理
+	fmt.Printf("%T\n",data) //[]uint8字节切片格式，不是字符串,格式化打印的时候用%s，或者string(data)转成字符串后再打印
+	fmt.Println(string(data))
+
+	singer1 := singer{
+		Name: "Taeyeon",
+		Age:  31,
+		Album: album{
+			AlbumName:   "I",
+			ReleaseYear: 2015,
+		},
+		gender: "female",
+	}
+
+	data, err = json.Marshal(singer1)
+	if err != nil {
+		fmt.Printf("Marshal failed, error:%v\n", err)
+		return
+	}
+	fmt.Printf("%v\n", string(data)) // {"name":"Taeyeon","Age":31,"Album":{"AlbumName":"I","ReleaseYear":2015}}
+	// 通过Tag指定了json中Name字段key输出为name
+	// 由于gender字段首字母小写，json包无法访问
+
+	// 反序列化
+	str := `{"name":"Kim","age":18}` // 反序列化不用在意key首字母大小写，但要与字段名相同，顺序也要一致
+	var singer2 singer
+	json.Unmarshal([]byte(str), &singer2) // 为了能修改singer2的变量需要传入指针
+	fmt.Printf("%#v\n",singer2)
+	str2 := `{"name":"Yonna","age":29,"album":{"albumname":"A Walk to Remember","releaseyear":2015}}`
+
+	var singer3 singer
+	json.Unmarshal([]byte(str2), &singer3)
+	fmt.Printf("%#v\n", singer3)
 }

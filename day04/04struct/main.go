@@ -25,10 +25,13 @@ func main() {
 	fmt.Printf("p1=%v\n", p1)
 
 	// 需要定义一些临时数据结构的场景下，可以使用匿名结构体
-	var user struct{Name string; Age int}
+	var user struct{Name string; Age int} // 结构体字段可以写在一行，用分号隔开
 	user.Name = "Taeyeon"
 	user.Age = 18
 	fmt.Printf("%#v\n", user)
+
+	var num1 = struct {x int;y int} {10, 20} // 定义并初始化
+	fmt.Println(num1)
 
 	// 结构体指针，使用new关键字对结构体进行实例化，得到的是结构体的地址
 	var p2 = new(person)

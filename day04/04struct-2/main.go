@@ -231,9 +231,9 @@ func main() {
 	// 由于gender字段首字母小写，json包无法访问
 
 	// 反序列化
-	str := `{"name":"Kim","age":18}` // 反序列化不用在意key首字母大小写，但要与字段名相同，顺序也要一致
+	str := `{"name":"Kim","age":18}` // 反序列化不用在意key首字母大小写，但要与字段名相同，顺序也要一致，有tag的要跟tag对应
 	var singer2 singer
-	json.Unmarshal([]byte(str), &singer2) // 为了能修改singer2的变量需要传入指针
+	json.Unmarshal([]byte(str), &singer2) // 需要将字符串转换成字符切片才能传入，为了能修改singer2的变量需要传入指针
 	fmt.Printf("%#v\n",singer2)
 	str2 := `{"name":"Yonna","age":29,"album":{"albumname":"A Walk to Remember","releaseyear":2015}}`
 

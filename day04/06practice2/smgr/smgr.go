@@ -15,8 +15,8 @@ type StudentMgr struct {
 
 // ShowMenu show the system menu
 func ShowMenu() {
-	fmt.Println("Welcome to SMS")
 	fmt.Println(`
+	Welcome to SMS
 	1.查看所有学生信息
 	2.添加学生信息
 	3.修改学生信息
@@ -44,6 +44,12 @@ func (s StudentMgr) AddStudent() {
 	// 获取用户输入
 	fmt.Println("请输入学号：")
 	fmt.Scanln(&stuID)
+	for _, v := range s.AllStudent {
+		if v.ID == stuID {
+			fmt.Println("该学号已存在")
+			return
+		}
+	}
 	fmt.Println("请输入姓名：")
 	fmt.Scanln(&stuName)
 	newStu := Student{

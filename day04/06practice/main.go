@@ -22,8 +22,8 @@ type studentMgr struct {
 }
 
 func showMenu() {
-	fmt.Println("Welcome to SMS")
 	fmt.Println(`
+	Welcome to SMS 
 	1.查看所有学生信息
 	2.添加学生信息
 	3.修改学生信息
@@ -40,7 +40,6 @@ func (s studentMgr) showAllStudent() {
 }
 
 func (s studentMgr) addStudent() {
-	fmt.Println(s)
 	// 根据用户输入的内容，创建一个新的学生
 	var (
 		stuID   int64
@@ -49,6 +48,12 @@ func (s studentMgr) addStudent() {
 	// 获取用户输入
 	fmt.Println("请输入学号：")
 	fmt.Scanln(&stuID)
+	for _, v := range s.allStudent {
+		if stuID == v.id {
+			fmt.Println("该学号已存在")
+			return
+		}
+	}
 	fmt.Println("请输入姓名：")
 	fmt.Scanln(&stuName)
 	newStu := student{

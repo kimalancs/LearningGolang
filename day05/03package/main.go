@@ -3,7 +3,7 @@ package main
 import ( // 多行导入格式
 	"fmt"
 
-	s "github.com/studygo/day04/06practice2/smgr" // 自定义包名，当包名太长或冲突时使用
+	s "github.com/kimalancs/LearningGolang/day04/06practice2/smgr" // 自定义包名，当包名太长或冲突时使用
 
 )
 /*

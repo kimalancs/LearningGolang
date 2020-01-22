@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
-	"github.com/studygo/day04/06practice2/smgr"
+	"github.com/kimalancs/LearningGolang/day04/06practice2/smgr"
 )
 
 

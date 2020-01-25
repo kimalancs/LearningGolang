@@ -56,9 +56,9 @@ func insertString() {
 	defer tmpFile.Close()
 
 	var ret [6]byte
-	n, err2 := fileObj.Read(ret[:])
-	if err2 != nil {
-		fmt.Printf("read from file failed, err: %v", err2)
+	n, err := fileObj.Read(ret[:])
+	if err != nil {
+		fmt.Printf("read from file failed, err: %v", err)
 		return
 	}
 

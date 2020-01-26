@@ -16,7 +16,10 @@ time.Now() 获取当前的时间对象
 
 
 时间戳
-自1970年1月1日（08:00:00GMT）至当前时间的总毫秒数
+自1970年1月1日（08:00:00GMT）至当前时间的总时常
+10位的单位是秒
+13位的单位是毫秒
+19位的单位是纳秒
 也被称为Unix时间戳 Unix Timestamp
 基于时间对象可以通过Unix方法获取
 
@@ -84,7 +87,7 @@ time.Tick(时间间隔)设置定时器，定时器本质上是一个通道
 时间格式化
 Format
 func (t Time) Format(layout string) string
-格式化参考模板不是常见的 Y-M-D H:M:S
+格式化模板不是常见的 Y-M-D H:M:S
 而是使用Go诞生时间2006年1月2号15时4分（快速记忆 2006-1-2-3-4）
 Mon Jan 2 15:04:05 -0700 MST 2006
 
@@ -92,7 +95,7 @@ Mon Jan 2 15:04:05 -0700 MST 2006
 */
 func timestampDemo() int64 {
 	now := time.Now()
-	timestamp1 := now.Unix()     // 基于时间对象获取时间戳
+	timestamp1 := now.Unix()     // 基于时间对象获取时间戳(单位秒)
 	timestamp2 := now.UnixNano() // 纳秒时间戳
 	fmt.Printf("current timestamp1: %v\n", timestamp1)
 	fmt.Printf("current timestamp2: %v\n", timestamp2)
@@ -104,22 +107,22 @@ func timestampDemo2(timestamp int64) {
 	fmt.Println(timeObj)
 }
 
-func tickDemo(){
+func tickDemo() {
 	ticker := time.Tick(time.Second) // 定义一个1秒间隔的定时器
 	for i := range ticker {
 		fmt.Println(i) // 每秒都会执行的任务
 	}
 }
 
-func formatDemo(){
+func formatDemo() {
 	now := time.Now()
 	fmt.Println(now.Format("Mon Jan 2 15:04:05 -0700 MST 2006"))
 	fmt.Println(now.Format("2006-01-02 15:04:05.000 Mon Jan"))
 	fmt.Println(now.Format("2006-01-02 03:04:05.000 PM Mon Jan"))
 	fmt.Println(now.Format("2006/01/02 15:04"))
-	fmt.Println(now.Format("15:04 2016/01/02")) // 年份有问题
-	fmt.Println(now.Format("3:04 PM 2016/01/02")) // 年份有问题
-	fmt.Println(now.Format("2006/01/02"))
+	fmt.Println(now.Format("15:04 2016/01/02"))   // 年份有问题
+	fmt.Println(now.Format("3:04 PM 2016 01 02")) // 年份有问题
+	fmt.Println(now.Format("2006-01-02"))
 }
 
 func main() {
@@ -142,7 +145,7 @@ func main() {
 	fmt.Println(now.YearDay())  // 那一年的第几天
 	fmt.Println(now.Date())     // 返回年月日三个值
 	fmt.Println(now.Clock())    // 返回时分秒三个值
-	fmt.Println(now.UTC())		// 对应的UTC时间
+	fmt.Println(now.UTC())      // 对应的UTC时间
 
 	timestamp := timestampDemo()
 	timestampDemo2(timestamp)
@@ -171,5 +174,28 @@ func main() {
 	// 单变量声明时不能重复声明，多变量声明时可以，只要有一个新变量即可
 	fmt.Println(timeObj)
 	fmt.Println(timeObj.Sub(now))
+
+	// 解析字符串格式的时间
+	// Parse
+	// func Parse(layout, value string)(time, error)
+	// 传入两个参数，一个模板，一个需转换的字符串
+	// 不指定时区时默认UTC
+	now2, err := time.Parse("2006/01/02 15:04:05 -0700 MST", "2020/01/26 16:33:44 +0800 CST") // 需转换的字符串应与模板的格式一致
+	if err != nil {
+		fmt.Printf("parse time failed, err:%v", err)
+		return
+	}
+	fmt.Println(now2)
+
+	// sleep
+	// func Sleep(d Duration)
+
+	num := 1e9
+	fmt.Println("begin to sleep")
+	time.Sleep(time.Duration(num) * 3) // Sleep函数传入参数为Duration类型，num是int类型，必须强制转换类型
+	fmt.Println("sleep done")
+	fmt.Println("begin to sleep again")
+	time.Sleep(1e9 * 3)	// 直接传入一个数字会被自动转换成Duration类型，无需显式转换类型，转换后单位为纳秒，1s = 1e9纳秒
+	fmt.Println("sleep done again")
 
 }

@@ -38,6 +38,7 @@ func NewFileLogger(levelStr, fp, fn string, maxFileSize int64) *FileLogger {
 	return fl
 }
 
+// 创建文件类型实例时，初始化，打开实例
 func (f *FileLogger) initFile() error {
 	fullFileName := path.Join(f.filePath, f.fileName)
 	fileObj, err := os.OpenFile(fullFileName, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
@@ -55,7 +56,7 @@ func (f *FileLogger) initFile() error {
 	return nil
 }
 
-// Close close the log file
+// Close close the log file 关闭日志文件
 func (f *FileLogger) Close() {
 	f.fileObj.Close()
 	f.errFileObj.Close()
@@ -66,6 +67,7 @@ func (f *FileLogger) Close() {
 // 每次计入日志前，判断当前写的文件的大小，超过设定的最大值，就关闭当前的文件，重命名后，再打开一个新的日志文件继续写入
 // 2. 按照日志文件大小切割
 
+// 判断文件是否需要切割
 func (f *FileLogger) checkSize(file *os.File) bool {
 	fileInfo, err := file.Stat() // 文件信息
 	if err != nil {
@@ -76,6 +78,7 @@ func (f *FileLogger) checkSize(file *os.File) bool {
 	return fileInfo.Size() >= f.maxFileSize
 }
 
+// 切割日志文件
 func (f *FileLogger) spliteFile(file *os.File) (*os.File, error) {
 	//切割日志
 	// 获取文件信息
@@ -101,6 +104,7 @@ func (f *FileLogger) spliteFile(file *os.File) (*os.File, error) {
 	return fileObj, nil
 }
 
+// 记录日志到日志文件
 func (f *FileLogger) log(lv LogLevel, format string, args ...interface{}) {
 	if f.enable(lv) {
 		msg := fmt.Sprintf(format, args...)
@@ -128,6 +132,7 @@ func (f *FileLogger) log(lv LogLevel, format string, args ...interface{}) {
 	}
 }
 
+// 判断是否需要记录日志
 func (f *FileLogger) enable(logLevel LogLevel) bool {
 	return logLevel >= f.Level
 }

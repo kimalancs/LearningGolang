@@ -7,13 +7,13 @@ import (
 
 // 往终端写日志相关内容
 
-// ConsoleLogger log
+// ConsoleLogger log 终端日志类型
 type ConsoleLogger struct {
 	Level LogLevel
 }
 
-// NewConsoleLog Logger构造函数
-func NewConsoleLog(levelStr string) ConsoleLogger {
+// NewConsoleLogger ConsoleLogger构造函数
+func NewConsoleLogger(levelStr string) ConsoleLogger {
 	level, err := parseLogLevel(levelStr)
 	if err != nil {
 		panic(err)
@@ -37,31 +37,31 @@ func (c *ConsoleLogger) enable(logLevel LogLevel) bool {
 }
 
 // Debug debug log
-func (c *ConsoleLogger) Debug(format string, args ...interface{}) {
+func (c ConsoleLogger) Debug(format string, args ...interface{}) {
 	c.log(DEBUG, format, args...)
 }
 
 // Trace trace log
-func (c *ConsoleLogger) Trace(format string, args ...interface{}) {
+func (c ConsoleLogger) Trace(format string, args ...interface{}) {
 	c.log(TRACE, format, args...)
 }
 
 // Info Info log
-func (c *ConsoleLogger) Info(format string, args ...interface{}) {
+func (c ConsoleLogger) Info(format string, args ...interface{}) {
 	c.log(INFO, format, args...)
 }
 
 // Warn Warn log
-func (c *ConsoleLogger) Warn(format string, args ...interface{}) {
+func (c ConsoleLogger) Warn(format string, args ...interface{}) {
 	c.log(WARN, format, args...)
 }
 
 // Error Error log
-func (c *ConsoleLogger) Error(format string, args ...interface{}) {
+func (c ConsoleLogger) Error(format string, args ...interface{}) {
 	c.log(ERROR, format, args...)
 }
 
 // Fatal fatal log
-func (c *ConsoleLogger) Fatal(format string, args ...interface{}) {
+func (c ConsoleLogger) Fatal(format string, args ...interface{}) {
 	c.log(FATAL, format, args...)
 }

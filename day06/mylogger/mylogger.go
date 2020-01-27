@@ -22,11 +22,6 @@ const (
 	FATAL
 )
 
-// Logger log
-type Logger struct {
-	Level LogLevel
-}
-
 func parseLogLevel(s string) (LogLevel, error) {
 	s = strings.ToUpper(s)
 	switch s {
@@ -67,21 +62,6 @@ func getLogString(lv LogLevel) string {
 		return "UNKNOWN"
 	}
 	return " "
-}
-
-// NewLog Logger构造函数
-func NewLog(levelStr string) Logger {
-	level, err := parseLogLevel(levelStr)
-	if err != nil {
-		panic(err)
-	}
-	return Logger{
-		Level: level,
-	}
-}
-
-func (l *Logger) enable(logLevel LogLevel) bool {
-	return logLevel >= l.Level
 }
 
 func getInfo(n int) (funcName string, fileName string, lineNumber int) {

@@ -62,6 +62,37 @@ import (
 // 常被用于判定返回值是否有效
 
 
+// 结构体反射
+// 任意值通过reflect.TypeOf()获得反射对象信息后，如果它的类型是结构体，可以通过反射值对象（reflect.Type）的NumField()和Field()方法获取结构体成员的详细信息
+// Field(i init) StructField 根据索引，返回索引对应的结构体字段
+// NumField() int 返回结构体成员字段数量
+// 这两个结合，可以先得到字段数量，然后遍历获取所有字段
+
+// FieldByName(name string) (StructField, bool) 根据给定字符串返回字符串对应的结构体字段的信息
+// FieldByIndex(index []int) StructField 多层成员访问时，根据[]int提供的每个结构体的字段索引，返回字段的信息
+// FieldByNameFunc(match func(string) bool) (StructField, bool) 根据传入的匹配函数匹配需要的字段
+// NumMethod() int 返回该类型的方法集中方法的数量
+// Method(int) Method 返回该类型方法集中的第i个方法
+// MethodByName(string) (Method, bool) 根据方法名返回该类型方法集中的方法
+
+// StructField类型用来描述结构体中的一个字段的信息
+// type StructField struct {
+//	// Name是字段的名字，PkgPath是非导出字段的包路径，对导出字段该字段为""
+//	Name string
+//	PkgPath string
+//	Type 	Type		// 字段的类型
+//	Tag 	StructTag	// 字段的标签
+//	Offset	uintptr		// 字段在结构体中的字节偏移量
+//	Index	[]int		// 用于Type.FieldByIndex时的索引切片
+//	Anonymous bool		// 是否匿名字段
+//}
+
+
+// 反射是一个强大并富有表现力的工具，能让我们写成更灵活的代码
+// 但是不能滥用，原因如下：
+// 基于反射的代码极其脆弱，反射中的类型错误会在真正运行时才引发panic，可能是代码写完很久之后才发现
+// 大量使用反射的代码通常难以理解
+// 反射的性能低下，基于反射实现的代码通常比正常代码运行速度慢一到两个数量级
 
 
 
@@ -106,6 +137,31 @@ func reflectSetValue2(x interface{}) {
 	}
 }
 
+func (p person) Study() string {
+	msg := "好好学习，天天向上"
+	return msg
+}
+
+func (p person) Sleep() string {
+	msg := "好好睡觉，健康成长"
+	return msg
+}
+
+func printMethod(x interface{}) {
+	t := reflect.TypeOf(x)
+	v := reflect.ValueOf(x)
+
+	fmt.Println(t.NumMethod())
+	fmt.Println(v.NumMethod())
+	for i := 0; i < v.NumMethod(); i++ {
+		methodType := v.Method(i).Type()
+		fmt.Printf("method name:%s\n", t.Method(i).Name)
+		fmt.Printf("method:%s\n", methodType)
+		// 通过反射调用方法传递的参数必须是[]reflect.Value类型
+		var args []reflect.Value
+		v.Method(i).Call(args)
+	}
+}
 
 func main() {
 	str := `{"name":"John","age":22}`
@@ -153,4 +209,22 @@ func main() {
 	fmt.Println("map中不存在的键：", reflect.ValueOf(i).MapIndex(reflect.ValueOf("kim")).IsValid())
 
 
+	stu := person {
+		Name: "taeyoen",
+		Age: 18,
+	}
+
+	t := reflect.TypeOf(stu)
+	fmt.Println(t.Name(), t.Kind())
+	// for循环遍历结构体中所有字段信息
+	for i := 0; i < t.NumField(); i++ {
+		field := t.Field(i)
+		fmt.Printf("name:%s index:%d type:%v json tag:%v\n", field.Name, field.Index, field.Type, field.Tag.Get("json"))
+	}
+	// 通过字段名获取指定结构体字段信息
+	if ageField, ok := t.FieldByName("Age"); ok {
+		fmt.Printf("name:%s index:%d type:%v json tag:%v\n", ageField.Name, ageField.Index, ageField.Type, ageField.Tag.Get("json"))
+	}
+
+	printMethod(stu)
 }

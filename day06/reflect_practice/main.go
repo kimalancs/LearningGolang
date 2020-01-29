@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"reflect"
 )
 
 // 反射主要了解原理，写代码时很少自己写
@@ -29,17 +30,29 @@ import (
 // 任何接口值在反射中都可以理解为由reflect.Type和reflect.Value两部分组成
 // 并且reflect包提供了reflect.TypeOf和reflect.ValueOf两个函数来获取任意对象的Type和Value
 
-
-
 type person struct {
 	Name string `json:"name"`
 	Age  int    `json:"age"`
 }
 
+func reflectType(x interface{}) {
+	t := reflect.TypeOf(x)
+	fmt.Printf("type:%v\n", t)
+}
+
+func reflectValue(x interface{}){
+}
+
 func main() {
 	str := `{"name":"John","age":22}`
 	var p person
-	json.Unmarshal([]byte(str), &p) // 真正执行时
+	json.Unmarshal([]byte(str), &p) // 接收的第二个参数是空接口，真正执行时才会确定变量类型
 	fmt.Println(p.Name, p.Age)
+
+	var a float32 = 1.2
+	reflectType(a)
+	var b string = "hello"
+	reflectType(b)
+	reflectType(p)
 
 }

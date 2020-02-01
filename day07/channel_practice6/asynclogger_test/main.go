@@ -4,7 +4,7 @@ import (
 	"github.com/kimalancs/LearningGolang/day07/channel_practice6/asynclogger"
 )
 
-// 异步记录方式的日志库
+// 异步记录方式的日志库测试
 
 func main() {
 		var log asynclogger.Logger

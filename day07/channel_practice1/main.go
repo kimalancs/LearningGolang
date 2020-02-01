@@ -106,7 +106,7 @@ func main() {
 	for {
 		i, ok := <-ch5
 		if !ok {
-			fmt.Printf("%#v\n", i) // 取完后
+			fmt.Printf("%#v\n", i) // channel只有关闭之后才能一直取值，channel未关闭时，取完所有值，再取就会阻塞，而关闭后，取完再继续取，会返回该类型的零值和false
 			break
 		}
 	}

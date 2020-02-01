@@ -1,4 +1,4 @@
-package mylogger
+package synclogger
 
 import (
 	"errors"

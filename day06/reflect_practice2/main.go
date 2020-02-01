@@ -96,9 +96,9 @@ func loadIni(fileName string, data interface{}) (err error) {
 				err = fmt.Errorf("line:%d syntax error", index+1)
 				return
 			}
-			indexof := strings.Index(line, "=")
-			key := strings.TrimSpace(line[:indexof])
-			value := strings.TrimSpace(line[indexof+1:])
+			index2 := strings.Index(line, "=")
+			key := strings.TrimSpace(line[:index2])
+			value := strings.TrimSpace(line[index2+1:])
 			// 根据structName去data里面把对应的嵌套结构体取出来
 			v := reflect.ValueOf(data)
 			structValue := v.Elem().FieldByName(structName) // 拿到嵌套结构体的值信息

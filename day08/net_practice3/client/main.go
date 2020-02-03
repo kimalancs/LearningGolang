@@ -8,8 +8,8 @@ import (
 // 使用Go语言的net包实现的UDP客户端代码
 func main() {
 	socket, err := net.DialUDP("udp", nil, &net.UDPAddr{
-		IP:   net.IPv4(0, 0, 0, 0),
-		Port: 30000,
+		IP:   net.IPv4(127, 0, 0, 1),
+		Port: 40000,
 	})
 	if err != nil {
 		fmt.Println("连接服务端失败，err:", err)

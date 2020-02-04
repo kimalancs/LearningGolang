@@ -1,3 +1,9 @@
 <h1 style="color:red">Hello</h1>
 <a href="http://www.baidu.com">点我去百度</a>
-<img src="https://tva1.sinaimg.cn/mw690/006OBeunly1gbk69lzu04j30mj0co49p.jpg" width="400"/>
+<img id="i1" src="https://tva1.sinaimg.cn/mw690/006OBeunly1gbk69lzu04j30mj0co49p.jpg" width="400"/>
+<button id="b1" >点我</button>
+<script>
+    document.getElementById('b1').onclick = function() {
+        document.getElementById('i1').src = "http://socdn.smtown.com/upload/mf/album/images/000/011/507/11507.jpg"
+    }
+</script>

@@ -40,7 +40,23 @@ func f1(w http.ResponseWriter, r *http.Request) {
 	// w.Write([]byte(str))
 }
 
+func f2(w http.ResponseWriter, r *http.Request){
+	// GET请求，参数都放在URL中，query param，请求体中没有数据
+	fmt.Println(r.URL)
+	queryParam := r.URL.Query() // .Query() 方法会自动识别URL中的query param
+	name := queryParam.Get("name")
+	age := queryParam.Get("age")
+	fmt.Println(name, age)
+	fmt.Println(r.Method)
+	fmt.Println(ioutil.ReadAll(r.Body))
+	w.Write([]byte("ok"))
+
+}
+
+
 func main() {
-	http.HandleFunc("/posts/Go", f1) // 根据访问的路径找对应的函数执行
+	http.HandleFunc("/posts/Go/", f1) // 根据访问的路径找对应的函数执行
+	http.HandleFunc("/posts/hello/", f2)
 	http.ListenAndServe("0.0.0.0:9090", nil) //起服务，监听，等待访问
 }
+

@@ -51,6 +51,6 @@ func main() {
 			fmt.Println("accept failed", err)
 			return
 		}
-		go processConn()
+		go processConn(conn)
 	}
 }

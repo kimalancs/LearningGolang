@@ -147,7 +147,7 @@ func transactionDemo() {
 // Oracle		:name
 
 // SQL注入
-// 我们任何时候都不应该自己拼接SQL语句！
+// 我们任何时候都不应该自己拼接SQL语句
 // 这里我们演示一个自行拼接SQL语句的示例，编写一个根据name字段查询user表的函数如下：
 
 // sql注入示例
@@ -178,5 +178,4 @@ func main() {
 	queryRowDemo()
 	transactionDemo()
 	queryMultiRowDemo()
-
 }
